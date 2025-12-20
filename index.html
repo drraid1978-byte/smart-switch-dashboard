@@ -238,18 +238,21 @@
                 requestStatus();
             });
             
-            client.on('message', function(topic, message) {
-                console.log('Received message:', topic, message.toString());
-                
-                // Parse status message
-                try {
-                    const status = JSON.parse(message.toString());
-                    updateSwitchStatus(status.relayState);
-                    updateConnectionStatus(true, 'متصل بالجهاز');
-                } catch (e) {
-                    console.error('Error parsing status message:', e);
-                }
-            });
+          client.on('message', function(topic, message) {
+    console.log('Received message:', topic, message.toString());
+    
+    // Parse status message
+    try {
+        const status = JSON.parse(message.toString());
+        console.log('Parsed status:', status);
+        updateSwitchStatus(status.relayState);
+        updateConnectionStatus(true, 'متصل بالجهاز');
+    } catch (e) {
+        console.error('Error parsing status message:', e);
+        // Show raw message for debugging
+        console.log('Raw message:', message.toString());
+    }
+});
             
             client.on('error', function(err) {
                 console.error('MQTT error:', err);
