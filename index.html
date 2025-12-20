@@ -225,7 +225,7 @@
         
         function connectToMqtt() {
             // Connect to public MQTT broker
-            client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
+client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
             
             client.on('connect', function() {
                 console.log('Connected to MQTT broker');
