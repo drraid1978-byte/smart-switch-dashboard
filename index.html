@@ -905,59 +905,59 @@
             }
         }
         
-        function showQRCode(index) {
-            const device = devices[index];
-            
-            // Create QR code modal
-            const modal = document.createElement('div');
-            modal.className = 'modal';
-            modal.id = 'qrModal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <span class="close-modal" onclick="closeQRModal()">&times;</span>
-                    <h2><i class="fas fa-qrcode"></i> رمز QR للجهاز</h2>
-                    
-                    <div class="qr-container">
-                        <div id="qrcode"></div>
-                    </div>
-                    
-                    <div class="qr-info">
-                        <p><strong>اسم الجهاز:</strong> ${device.name}</p>
-                        <p><strong>معرف الجهاز:</strong> ${device.id}</p>
-                        <p><strong>رمز المصادقة:</strong> ${device.token}</p>
-                        <p><strong>الغرفة:</strong> ${device.room || '-'}</p>
-                        <p><strong>التعليمات:</strong></p>
-                        <ol>
-                            <li>1. قم بتنزيل تطبيق QR scanner على هاتفك</li>
-                            <li>2. امسح رمز QR ضوئه</li>
-                            <li>3. امسح رمز QR الموجود في الجهاز</li>
-                            <li>4. امسح رمز QR الموجود في لوحة التحكم</li>
-                            <li>5. امسح رمز QR الموجود في تطبيقك</li>
-                            <li>6. امسح رمز QR الموجود في متصفح الويب</li>
-                            <li>7. أعد تشغيل الجهاز</li>
-                            <li>8. قم بمسح رمز QR الجديد</li>
-                        </ol>
-                    </div>
-                    
-                    <button class="btn btn-primary" onclick="printQRCode()">
-                        <i class="fas fa-print"></i> طباعة
-                    </button>
-                </div>
-            `;
+function showQRCode(index) {
+    const device = devices[index];
     
-            document.body.appendChild(modal);
+    // Create QR code modal
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.id = 'qrModal';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeQRModal()">&times;</span>
+            <h2><i class="fas fa-qrcode"></i> رمز QR للجهاز</h2>
             
-            // Generate QR code after modal is added to DOM
-            setTimeout(() => {
-                new QRCode(document.getElementById("qrcode"), {
-                    text: `smartswitch:${device.id}:${device.token}`,
-                    width: 200,
-                    height: 200,
-                    colorDark: "#2c3e50",
-                    colorLight: "#ffffff",
-                });
-            }, 100);
-        }
+            <div class="qr-container">
+                <div id="qrcode"></div>
+            </div>
+            
+            <div class="qr-info">
+                <p><strong>اسم الجهاز:</strong> <span id="qrDeviceName">${device.name}</span></p>
+                <p><strong>معرف الجهاز:</strong> <span id="qrDeviceId">${device.id}</span></p>
+                <p><strong>رمز المصادقة:</strong> <span id="qrDeviceToken">${device.token}</span></p>
+                <p><strong>الغرفة:</strong> <span id="qrDeviceRoom">${device.room || '-'}</span></p>
+                <p><strong>التعليمات:</strong></p>
+                <ol>
+                    <li>1. قم بتنزيل تطبيق QR scanner على هاتفك</li>
+                    <li>2. امسح رمز QR ضوئه</li>
+                    <li>3. امسح رمز QR الموجود في الجهاز</li>
+                    <li>4. امسح رمز QR الموجود في لوحة التحكم</li>
+                    <li>5. امسح رمز QR الموجود في تطبيقك</li>
+                    <li>6. امسح رمز QR الموجود في متصفح الويب</li>
+                    <li>7. أعد تشغيل الجهاز</li>
+                    <li>8. قم بمسح رمز QR الجديد</li>
+                </ol>
+            </div>
+            
+            <button class="btn btn-primary" onclick="printQRCode()">
+                <i class="fas fa-print"></i> طباعة
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Generate QR code after modal is added to DOM
+    setTimeout(() => {
+        new QRCode(document.getElementById("qrcode"), {
+            text: `smartswitch:${device.id}:${device.token}`,
+            width: 200,
+            height: 200,
+            colorDark: "#2c3e50",
+            colorLight: "#ffffff",
+        });
+    }, 100);
+}
         
         function closeQRModal() {
             const modal = document.getElementById('qrModal');
