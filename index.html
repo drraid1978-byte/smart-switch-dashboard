@@ -237,7 +237,7 @@ client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
                 updateConnectionStatus(false, 'Waiting for device status...');
                 
                 // Subscribe to device status topic
-                client.subscribe('laithsmartswitch/remote/' + deviceId + '/status');
+client.subscribe('laithsmartswitch/remote/' + deviceId + '/status', {qos: 1});
                 
                 // Request status immediately
                 requestStatus();
