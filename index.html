@@ -189,6 +189,19 @@
         let deviceId = '';
         let authToken = '';
         
+        // Check if credentials are saved in localStorage
+        window.onload = function() {
+            const savedDeviceId = localStorage.getItem('deviceId');
+            const savedAuthToken = localStorage.getItem('authToken');
+            
+            if (savedDeviceId && savedAuthToken) {
+                document.getElementById('deviceId').value = savedDeviceId;
+                document.getElementById('authToken').value = savedAuthToken;
+                // Auto-login if credentials are saved
+                login();
+            }
+        };
+        
         function login() {
             deviceId = document.getElementById('deviceId').value;
             authToken = document.getElementById('authToken').value;
@@ -197,6 +210,10 @@
                 alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
                 return;
             }
+            
+            // Save credentials to localStorage
+            localStorage.setItem('deviceId', deviceId);
+            localStorage.setItem('authToken', authToken);
             
             // Connect to MQTT broker
             connectToMqtt();
@@ -210,47 +227,50 @@
             // Connect to public MQTT broker
             client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
             
-           client.on('connect', function() {
-    console.log('Connected to MQTT broker');
-    updateConnectionStatus(false, 'Waiting for device status...');
-    
-    // Subscribe to device status topic
-    client.subscribe('laithsmartswitch/remote/' + deviceId + '/status');
-});
+            client.on('connect', function() {
+                console.log('Connected to MQTT broker');
+                updateConnectionStatus(false, 'Waiting for device status...');
+                
+                // Subscribe to device status topic
+                client.subscribe('laithsmartswitch/remote/' + deviceId + '/status');
+                
+                // Request status immediately
+                requestStatus();
+            });
             
-          client.on('message', function(topic, message) {
-    console.log('Received message:', topic, message.toString());
-    
-    // Parse status message
-    try {
-        const status = JSON.parse(message.toString());
-        updateSwitchStatus(status.relayState);
-        updateConnectionStatus(true, 'متصل بالجهاز');
-    } catch (e) {
-        console.error('Error parsing status message:', e);
-    }
-});
+            client.on('message', function(topic, message) {
+                console.log('Received message:', topic, message.toString());
+                
+                // Parse status message
+                try {
+                    const status = JSON.parse(message.toString());
+                    updateSwitchStatus(status.relayState);
+                    updateConnectionStatus(true, 'متصل بالجهاز');
+                } catch (e) {
+                    console.error('Error parsing status message:', e);
+                }
+            });
             
             client.on('error', function(err) {
                 console.error('MQTT error:', err);
-                updateConnectionStatus(false);
+                updateConnectionStatus(false, 'خطأ في الاتصال');
             });
             
             client.on('close', function() {
-                updateConnectionStatus(false);
+                updateConnectionStatus(false, 'غير متصل بالجهاز');
             });
         }
         
-      function updateConnectionStatus(connected, message) {
-    const statusElement = document.getElementById('connectionStatus');
-    if (connected) {
-        statusElement.textContent = message || 'متصل بالجهاز';
-        statusElement.className = 'status connected';
-    } else {
-        statusElement.textContent = message || 'غير متصل بالجهاز';
-        statusElement.className = 'status disconnected';
-    }
-}
+        function updateConnectionStatus(connected, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connected) {
+                statusElement.textContent = message || 'متصل بالجهاز';
+                statusElement.className = 'status connected';
+            } else {
+                statusElement.textContent = message || 'غير متصل بالجهاز';
+                statusElement.className = 'status disconnected';
+            }
+        }
         
         function updateSwitchStatus(isOn) {
             document.getElementById('switchToggle').checked = isOn;
@@ -271,45 +291,58 @@
             sendCommand('off');
         }
         
-     function sendCommand(command) {
-    if (!client || !client.connected) {
-        alert('غير متصل بالجهاز');
-        return;
-    }
-    
-    const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
-    const message = {
-        command: command,
-        token: authToken
-    };
-    
-    client.publish(topic, JSON.stringify(message));
-    console.log('Sent command:', command);
-}
-
-function logout() {
-    if (client) {
-        client.end();
-    }
-    
-    document.getElementById('loginSection').classList.remove('hidden');
-    document.getElementById('controlSection').classList.add('hidden');
-    document.getElementById('deviceId').value = '';
-    document.getElementById('authToken').value = '';
-}
-
-// Check if device is online
-setInterval(function() {
-    if (client && client.connected) {
-        // Request status update from device
-        const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
-        const message = {
-            command: 'status',
-            token: authToken
-        };
-        client.publish(topic, JSON.stringify(message));
-    }
-}, 30000); // Every 30 seconds
-</script>
+        function sendCommand(command) {
+            if (!client || !client.connected) {
+                alert('غير متصل بالجهاز');
+                return;
+            }
+            
+            const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
+            const message = {
+                command: command,
+                token: authToken
+            };
+            
+            client.publish(topic, JSON.stringify(message));
+            console.log('Sent command:', command);
+        }
+        
+        function requestStatus() {
+            if (!client || !client.connected) {
+                return;
+            }
+            
+            const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
+            const message = {
+                command: 'status',
+                token: authToken
+            };
+            
+            client.publish(topic, JSON.stringify(message));
+            console.log('Requested status');
+        }
+        
+        function logout() {
+            if (client) {
+                client.end();
+            }
+            
+            // Clear saved credentials
+            localStorage.removeItem('deviceId');
+            localStorage.removeItem('authToken');
+            
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('controlSection').classList.add('hidden');
+            document.getElementById('deviceId').value = '';
+            document.getElementById('authToken').value = '';
+        }
+        
+        // Request status every 30 seconds
+        setInterval(function() {
+            if (client && client.connected) {
+                requestStatus();
+            }
+        }, 30000);
+    </script>
 </body>
 </html>
