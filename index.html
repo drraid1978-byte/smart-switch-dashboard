@@ -225,7 +225,12 @@
         
         function connectToMqtt() {
             // Connect to public MQTT broker
-client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt');
+// Create unique client ID with random number
+const clientId = 'web-' + Math.random().toString(16).substr(2, 8);
+client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+    clientId: clientId,
+    clean: true
+});
             
             client.on('connect', function() {
                 console.log('Connected to MQTT broker');
