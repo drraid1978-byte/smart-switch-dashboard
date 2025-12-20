@@ -268,9 +268,11 @@
             }
         };
         
-       function login() {
+   function login() {
     const deviceId = document.getElementById('deviceId').value;
     const authToken = document.getElementById('authToken').value;
+    
+    console.log('Login attempt with deviceId:', deviceId);
     
     if (!deviceId || !authToken) {
         alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
@@ -279,8 +281,16 @@
     
     // Check if device already exists
     const existingDevice = devices.find(d => d.id === deviceId);
+    console.log('Existing device found:', existingDevice);
+    console.log('Current devices array:', devices);
+    
     if (existingDevice) {
         alert('هذا الجهاز مضاف بالفعل');
+        console.log('Device already exists, showing dashboard');
+        // Show device section even if device exists
+        document.getElementById('loginSection').classList.add('hidden');
+        document.getElementById('deviceSection').classList.remove('hidden');
+        renderDeviceList();
         return;
     }
     
@@ -293,6 +303,8 @@
         online: false
     });
     
+    console.log('Device added to array. New devices:', devices);
+    
     // Save to localStorage
     localStorage.setItem('smartSwitchDevices', JSON.stringify(devices));
     
@@ -304,10 +316,9 @@
     document.getElementById('loginSection').classList.add('hidden');
     document.getElementById('deviceSection').classList.remove('hidden');
     
-    // Force render device list with a small delay to ensure DOM is ready
-    setTimeout(() => {
-        renderDeviceList();
-    }, 100);
+    // Force render device list
+    console.log('About to render device list...');
+    renderDeviceList();
 }
         
         function renderDeviceList() {
