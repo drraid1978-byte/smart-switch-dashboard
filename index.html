@@ -13,7 +13,7 @@
             direction: rtl;
         }
         .container {
-            max-width: 800px;
+            max-width: 400px;
             margin: 0 auto;
             background-color: white;
             padding: 20px;
@@ -23,78 +23,6 @@
         .header {
             text-align: center;
             margin-bottom: 30px;
-        }
-        .login-form, .device-list {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-        }
-        .device-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-        }
-        .device-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .device-name {
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .device-status {
-            display: flex;
-            align-items: center;
-        }
-        .status-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        .status-online {
-            background-color: #4CAF50;
-        }
-        .status-offline {
-            background-color: #F44336;
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .btn {
-            padding: 8px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .btn-on {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .btn-off {
-            background-color: #F44336;
-            color: white;
-        }
-        .btn-toggle {
-            background-color: #2196F3;
-            color: white;
-        }
-        .btn-add {
-            background-color: #FF9800;
-            color: white;
-        }
-        .btn-remove {
-            background-color: #9E9E9E;
-            color: white;
         }
         .form-group {
             margin-bottom: 15px;
@@ -111,7 +39,7 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
-        .btn-login {
+        .btn {
             width: 100%;
             padding: 10px;
             background-color: #2196F3;
@@ -121,30 +49,37 @@
             cursor: pointer;
             font-weight: bold;
         }
+        .btn:hover {
+            background-color: #0b7dda;
+        }
+        .btn-danger {
+            background-color: #f44336;
+        }
+        .btn-danger:hover {
+            background-color: #d32f2f;
+        }
+        .btn-success {
+            background-color: #4CAF50;
+        }
+        .btn-success:hover {
+            background-color: #388E3C;
+        }
         .hidden {
             display: none;
         }
-        .tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
         }
-        .tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-            border-bottom: none;
+        .status.connected {
+            background-color: #e8f5e9;
+            color: #2e7d32;
         }
-        .tab.active {
-            background-color: white;
-            border-bottom: 1px solid #2196F3;
-        }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
+        .status.disconnected {
+            background-color: #ffebee;
+            color: #c62828;
         }
         .switch-container {
             display: flex;
@@ -191,33 +126,11 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
-        .timer-container, .schedule-container {
-            margin-top: 15px;
-            padding: 15px;
-            background-color: #f1f1f1;
-            border-radius: 8px;
-        }
-        .timer-input, .schedule-input {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .days-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        .day-btn {
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: white;
-        }
-        .day-btn.selected {
-            background-color: #2196F3;
-            color: white;
+        .admin-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #666;
         }
     </style>
 </head>
@@ -225,10 +138,10 @@
     <div class="container">
         <div class="header">
             <h1>لوحة تحكم المفتاح الذكي</h1>
-            <p>التحكم بمفاتيحك الذكية عن بعد</p>
+            <p>التحكم بمفتاحك الذكي عن بعد</p>
         </div>
 
-        <div id="loginSection" class="login-form">
+        <div id="loginSection">
             <h2>تسجيل الدخول</h2>
             <div class="form-group">
                 <label for="deviceId">معرف الجهاز:</label>
@@ -238,15 +151,36 @@
                 <label for="authToken">رمز المصادقة:</label>
                 <input type="password" id="authToken" placeholder="أدخل رمز المصادقة">
             </div>
-            <button class="btn-login" onclick="login()">تسجيل الدخول</button>
+            <button class="btn" onclick="login()">تسجيل الدخول</button>
         </div>
 
-        <div id="deviceSection" class="device-list hidden">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h2>أجهزتي</h2>
-                <button class="btn btn-add" onclick="addDevice()">إضافة جهاز</button>
+        <div id="controlSection" class="hidden">
+            <h2>التحكم في الجهاز</h2>
+            <div class="status" id="connectionStatus">
+                جاري الاتصال...
             </div>
-            <div id="deviceList"></div>
+            
+            <div class="switch-container">
+                <span>إيقاف</span>
+                <label class="switch">
+                    <input type="checkbox" id="switchToggle" onchange="toggleSwitch()">
+                    <span class="slider"></span>
+                </label>
+                <span>تشغيل</span>
+            </div>
+            
+            <div style="text-align: center; margin-top: 15px;">
+                <button class="btn btn-success" onclick="turnOn()">تشغيل</button>
+                <button class="btn btn-danger" onclick="turnOff()">إيقاف</button>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="logout()">تسجيل الخروج</button>
+            </div>
+        </div>
+        
+        <div class="admin-link">
+            <a href="#" onclick="showAdmin()">للإدارة الأجهزة</a>
         </div>
     </div>
 
@@ -254,416 +188,179 @@
     <script src="https://unpkg.com/mqtt@4.2.8/dist/mqtt.min.js"></script>
     
     <script>
-        let clients = {};  // Store multiple MQTT clients
-        let devices = [];  // Store device information
-        let activeDeviceId = null;
-        let activeAuthToken = null;
+        let client = null;
+        let deviceId = '';
+        let authToken = '';
         
-        // Check if devices are saved in localStorage
+        // Check if credentials are saved in localStorage
         window.onload = function() {
-            const savedDevices = localStorage.getItem('smartSwitchDevices');
-            if (savedDevices) {
-                devices = JSON.parse(savedDevices);
-                renderDeviceList();
+            const savedDeviceId = localStorage.getItem('deviceId');
+            const savedAuthToken = localStorage.getItem('authToken');
+            
+            if (savedDeviceId && savedAuthToken) {
+                document.getElementById('deviceId').value = savedDeviceId;
+                document.getElementById('authToken').value = savedAuthToken;
+                // Auto-login if credentials are saved
+                login();
             }
         };
         
-   function login() {
-    const deviceId = document.getElementById('deviceId').value;
-    const authToken = document.getElementById('authToken').value;
-    
-    console.log('Login attempt with deviceId:', deviceId);
-    
-    if (!deviceId || !authToken) {
-        alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
-        return;
-    }
-    
-    // Check if device already exists
-    const existingDevice = devices.find(d => d.id === deviceId);
-    console.log('Existing device found:', existingDevice);
-    console.log('Current devices array:', devices);
-    
-    if (existingDevice) {
-        alert('هذا الجهاز مضاف بالفعل');
-        console.log('Device already exists, showing dashboard');
-        // Show device section even if device exists
-        document.getElementById('loginSection').classList.add('hidden');
-        document.getElementById('deviceSection').classList.remove('hidden');
-        renderDeviceList();
-        return;
-    }
-    
-    // Add device to list
-    devices.push({
-        id: deviceId,
-        token: authToken,
-        name: 'جهاز ' + (devices.length + 1),
-        state: false,
-        online: false
-    });
-    
-    console.log('Device added to array. New devices:', devices);
-    
-    // Save to localStorage
-    localStorage.setItem('smartSwitchDevices', JSON.stringify(devices));
-    
-    // Clear form
-    document.getElementById('deviceId').value = '';
-    document.getElementById('authToken').value = '';
-    
-    // Show device section
-    document.getElementById('loginSection').classList.add('hidden');
-    document.getElementById('deviceSection').classList.remove('hidden');
-    
-    // Force render device list
-    console.log('About to render device list...');
-    renderDeviceList();
-}
-        
-        function renderDeviceList() {
-            const deviceList = document.getElementById('deviceList');
-            deviceList.innerHTML = '';
+        function login() {
+            deviceId = document.getElementById('deviceId').value;
+            authToken = document.getElementById('authToken').value;
             
-            devices.forEach((device, index) => {
-                const deviceCard = document.createElement('div');
-                deviceCard.className = 'device-card';
-                deviceCard.id = 'device-' + index;
-                
-                deviceCard.innerHTML = `
-                    <div class="device-header">
-                        <div class="device-name">${device.name}</div>
-                        <div class="device-status">
-                            <div class="status-dot ${device.online ? 'status-online' : 'status-offline'}"></div>
-                            <span>${device.online ? 'متصل' : 'غير متصل'}</span>
-                        </div>
-                    </div>
-                    <div class="controls">
-                        <button class="btn btn-on" onclick="turnOn(${index})">تشغيل</button>
-                        <button class="btn btn-off" onclick="turnOff(${index})">إيقاف</button>
-                        <button class="btn btn-toggle" onclick="toggleSwitch(${index})">تبديل</button>
-                        <button class="btn btn-remove" onclick="removeDevice(${index})">حذف</button>
-                    </div>
-                    <div class="switch-container">
-                        <span>إيقاف</span>
-                        <label class="switch">
-                            <input type="checkbox" id="switch-${index}" ${device.state ? 'checked' : ''} onchange="toggleSwitch(${index})">
-                            <span class="slider"></span>
-                        </label>
-                        <span>تشغيل</span>
-                    </div>
-                    
-                    <div class="tabs">
-                        <div class="tab active" onclick="showTab(${index}, 'control')">التحكم</div>
-                        <div class="tab" onclick="showTab(${index}, 'timer')">المؤقت</div>
-                        <div class="tab" onclick="showTab(${index}, 'schedule')">الجدولة</div>
-                    </div>
-                    
-                    <div id="control-${index}" class="tab-content active">
-                        <p>استخدم الأزرار أعلاه للتحكم في الجهاز</p>
-                    </div>
-                    
-                    <div id="timer-${index}" class="tab-content">
-                        <div class="timer-container">
-                            <div class="timer-input">
-                                <input type="number" id="timer-seconds-${index}" min="1" max="86400" placeholder="المدة بالثواني">
-                                <select id="timer-state-${index}">
-                                    <option value="on">تشغيل عند الانتهاء</option>
-                                    <option value="off">إيقاف عند الانتهاء</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-toggle" onclick="setTimer(${index})">ضبط المؤقت</button>
-                            <button class="btn btn-off" onclick="cancelTimer(${index})">إلغاء المؤقت</button>
-                        </div>
-                    </div>
-                    
-                    <div id="schedule-${index}" class="tab-content">
-                        <div class="schedule-container">
-                            <div class="schedule-input">
-                                <input type="time" id="schedule-on-${index}">
-                                <input type="time" id="schedule-off-${index}">
-                            </div>
-                            <div class="days-container">
-                                <div class="day-btn" onclick="toggleDay(${index}, 0)">الأحد</div>
-                                <div class="day-btn" onclick="toggleDay(${index}, 1)">الإثنين</div>
-                                <div class="day-btn" onclick="toggleDay(${index}, 2)">الثلاثاء</div>
-                                <div class="day-btn" onclick="toggleDay(${index}, 3)">الأربعاء</div>
-                                <div class="day-btn" onclick="toggleDay(${index}, 4)">الخميس</div>
-                                <div class="day-btn" onclick="toggleDay(${index}, 5)">الجمعة</div>
-                                <div class="day-btn" onclick="toggleDay(${index}, 6)">السبت</div>
-                            </div>
-                            <button class="btn btn-toggle" onclick="setSchedule(${index})">حفظ الجدولة</button>
-                        </div>
-                    </div>
-                `;
-                
-                deviceList.appendChild(deviceCard);
-                
-                // Connect to MQTT for this device
-                connectToDevice(index);
-            });
+            if (!deviceId || !authToken) {
+                alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
+                return;
+            }
+            
+            // Save credentials to localStorage
+            localStorage.setItem('deviceId', deviceId);
+            localStorage.setItem('authToken', authToken);
+            
+            // Connect to MQTT broker
+            connectToMqtt();
+            
+            // Show control panel
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('controlSection').classList.remove('hidden');
         }
         
-        function connectToDevice(index) {
-            const device = devices[index];
-            
+        function connectToMqtt() {
             // Create unique client ID with random number
             const clientId = 'web-' + Math.random().toString(16).substr(2, 8);
             
-            // Create new MQTT client for this device
-            clients[device.id] = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+            // Connect to public MQTT broker
+            client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
                 clientId: clientId,
                 clean: true
             });
             
-            clients[device.id].on('connect', function() {
-                console.log('Connected to MQTT broker for device:', device.id);
-                device.online = true;
-                updateDeviceStatus(index);
+            client.on('connect', function() {
+                console.log('Connected to MQTT broker');
+                updateConnectionStatus(false, 'Waiting for device status...');
                 
                 // Subscribe to device status topic with QoS 1
-                clients[device.id].subscribe('laithsmartswitch/remote/' + device.id + '/status', {qos: 1});
+                client.subscribe('laithsmartswitch/remote/' + deviceId + '/status', {qos: 1});
                 
                 // Request status immediately
-                requestStatus(index);
+                requestStatus();
             });
             
-            clients[device.id].on('message', function(topic, message) {
-                console.log('Received message for device', device.id, ':', message.toString());
+            client.on('message', function(topic, message) {
+                console.log('Received message:', topic, message.toString());
                 
+                // Parse status message
                 try {
                     const status = JSON.parse(message.toString());
-                    device.state = status.relayState;
-                    updateDeviceStatus(index);
+                    updateSwitchStatus(status.relayState);
+                    updateConnectionStatus(true, 'متصل بالجهاز');
                 } catch (e) {
                     console.error('Error parsing status message:', e);
                 }
             });
             
-            clients[device.id].on('error', function(err) {
-                console.error('MQTT error for device', device.id, ':', err);
-                device.online = false;
-                updateDeviceStatus(index);
+            client.on('error', function(err) {
+                console.error('MQTT error:', err);
+                updateConnectionStatus(false, 'خطأ في الاتصال');
             });
             
-            clients[device.id].on('close', function() {
-                console.log('MQTT connection closed for device:', device.id);
-                device.online = false;
-                updateDeviceStatus(index);
-                
-                // Try to reconnect after 5 seconds
-                setTimeout(() => connectToDevice(index), 5000);
+            client.on('close', function() {
+                updateConnectionStatus(false, 'غير متصل بالجهاز');
             });
         }
         
-        function updateDeviceStatus(index) {
-            const device = devices[index];
-            const statusDot = document.querySelector(`#device-${index} .status-dot`);
-            const statusText = document.querySelector(`#device-${index} .device-status span`);
-            const toggleSwitch = document.getElementById(`switch-${index}`);
-            
-            if (device.online) {
-                statusDot.className = 'status-dot status-online';
-                statusText.textContent = 'متصل';
-                toggleSwitch.checked = device.state;
+        function updateConnectionStatus(connected, message) {
+            const statusElement = document.getElementById('connectionStatus');
+            if (connected) {
+                statusElement.textContent = message || 'متصل بالجهاز';
+                statusElement.className = 'status connected';
             } else {
-                statusDot.className = 'status-dot status-offline';
-                statusText.textContent = 'غير متصل';
+                statusElement.textContent = message || 'غير متصل بالجهاز';
+                statusElement.className = 'status disconnected';
             }
         }
         
-        function addDevice() {
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('deviceSection').classList.add('hidden');
+        function updateSwitchStatus(isOn) {
+            document.getElementById('switchToggle').checked = isOn;
         }
         
-        function removeDevice(index) {
-            if (confirm('هل أنت متأكد من حذف هذا الجهاز؟')) {
-                // Disconnect MQTT client
-                if (clients[devices[index].id]) {
-                    clients[devices[index].id].end();
-                }
-                
-                // Remove from array
-                devices.splice(index, 1);
-                
-                // Save to localStorage
-                localStorage.setItem('smartSwitchDevices', JSON.stringify(devices));
-                
-                // Re-render list
-                renderDeviceList();
-            }
+        function toggleSwitch() {
+            const isOn = document.getElementById('switchToggle').checked;
+            sendCommand(isOn ? 'on' : 'off');
         }
         
-        function turnOn(index) {
-            sendCommand(index, 'on');
+        function turnOn() {
+            document.getElementById('switchToggle').checked = true;
+            sendCommand('on');
         }
         
-        function turnOff(index) {
-            sendCommand(index, 'off');
+        function turnOff() {
+            document.getElementById('switchToggle').checked = false;
+            sendCommand('off');
         }
         
-        function toggleSwitch(index) {
-            const device = devices[index];
-            sendCommand(index, device.state ? 'off' : 'on');
-        }
-        
-        function sendCommand(index, command) {
-            const device = devices[index];
-            const client = clients[device.id];
-            
+        function sendCommand(command) {
             if (!client || !client.connected) {
                 alert('غير متصل بالجهاز');
                 return;
             }
             
-            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
+            const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
             const message = {
                 command: command,
-                token: device.token
+                token: authToken
             };
             
             client.publish(topic, JSON.stringify(message));
-            console.log('Sent command:', command, 'to device:', device.id);
+            console.log('Sent command:', command);
         }
         
-        function requestStatus(index) {
-            const device = devices[index];
-            const client = clients[device.id];
-            
+        function requestStatus() {
             if (!client || !client.connected) {
                 return;
             }
             
-            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
+            const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
             const message = {
                 command: 'status',
-                token: device.token
+                token: authToken
             };
             
             client.publish(topic, JSON.stringify(message));
-            console.log('Requested status for device:', device.id);
+            console.log('Requested status');
         }
         
-        function showTab(deviceIndex, tabName) {
-            // Hide all tabs for this device
-            document.querySelectorAll(`#device-${deviceIndex} .tab-content`).forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Remove active class from all tabs
-            document.querySelectorAll(`#device-${deviceIndex} .tab`).forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Show selected tab
-            document.getElementById(`${tabName}-${deviceIndex}`).classList.add('active');
-            
-            // Add active class to clicked tab
-            event.target.classList.add('active');
-        }
-        
-        function setTimer(index) {
-            const seconds = document.getElementById(`timer-seconds-${index}`).value;
-            const state = document.getElementById(`timer-state-${index}`).value;
-            
-            if (!seconds || seconds < 1) {
-                alert('الرجاء إدخال مدة صحيحة');
-                return;
+        function logout() {
+            if (client) {
+                client.end();
             }
             
-            const device = devices[index];
-            const client = clients[device.id];
+            // Clear saved credentials
+            localStorage.removeItem('deviceId');
+            localStorage.removeItem('authToken');
             
-            if (!client || !client.connected) {
-                alert('غير متصل بالجهاز');
-                return;
-            }
-            
-            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
-            const message = {
-                command: 'timer',
-                token: device.token,
-                timer: {
-                    enabled: true,
-                    duration: parseInt(seconds),
-                    targetState: state === 'on'
-                }
-            };
-            
-            client.publish(topic, JSON.stringify(message));
-            console.log('Set timer for device:', device.id);
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('controlSection').classList.add('hidden');
+            document.getElementById('deviceId').value = '';
+            document.getElementById('authToken').value = '';
         }
         
-        function cancelTimer(index) {
-            const device = devices[index];
-            const client = clients[device.id];
-            
-            if (!client || !client.connected) {
-                alert('غير متصل بالجهاز');
-                return;
+        function showAdmin() {
+            // Simple admin password check
+            const password = prompt('أدخل كلمة المرور للإدارة:');
+            if (password === 'admin123') {
+                alert('واجهة الإدارة: قم بإضافة الأجهزة يدوياً إلى ملف index.html');
+            } else {
+                alert('كلمة المرور غير صحيحة');
             }
-            
-            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
-            const message = {
-                command: 'timer',
-                token: device.token,
-                timer: {
-                    enabled: false
-                }
-            };
-            
-            client.publish(topic, JSON.stringify(message));
-            console.log('Cancelled timer for device:', device.id);
         }
         
-        function setSchedule(index) {
-            const onTime = document.getElementById(`schedule-on-${index}`).value;
-            const offTime = document.getElementById(`schedule-off-${index}`).value;
-            
-            if (!onTime || !offTime) {
-                alert('الرجاء تحديد وقت التشغيل والإيقاف');
-                return;
-            }
-            
-            const device = devices[index];
-            const client = clients[device.id];
-            
-            if (!client || !client.connected) {
-                alert('غير متصل بالجهاز');
-                return;
-            }
-            
-            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
-            const message = {
-                command: 'schedule',
-                token: device.token,
-                schedule: {
-                    enabled: true,
-                    onTime: onTime,
-                    offTime: offTime,
-                    days: [true, true, true, true, true, true, true]  // All days
-                }
-            };
-            
-            client.publish(topic, JSON.stringify(message));
-            console.log('Set schedule for device:', device.id);
-        }
-        
-        function toggleDay(deviceIndex, dayIndex) {
-            // This is a simplified version - in a real implementation, 
-            // you would track which days are selected and send them in the schedule message
-            const dayBtn = document.querySelector(`#schedule-${deviceIndex} .day-btn:nth-child(${dayIndex + 1})`);
-            dayBtn.classList.toggle('selected');
-        }
-        
-        // Request status updates every 30 seconds for all devices
+        // Request status every 30 seconds
         setInterval(function() {
-            devices.forEach((device, index) => {
-                if (clients[device.id] && clients[device.id].connected) {
-                    requestStatus(index);
-                }
-            });
+            if (client && client.connected) {
+                requestStatus();
+            }
         }, 30000);
     </script>
 </body>
