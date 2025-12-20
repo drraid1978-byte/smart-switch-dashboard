@@ -1,97 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Switch Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-            direction: rtl;
-        }
-        .container {
-            max-width: 400px;
-            margin: 0 auto;
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 0;
             box-sizing: border-box;
         }
-        .btn {
-            width: 100%;
-            padding: 10px;
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
-        .btn:hover {
-            background-color: #0b7dda;
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        .btn-danger {
-            background-color: #f44336;
-        }
-        .btn-danger:hover {
-            background-color: #d32f2f;
-        }
-        .btn-success {
-            background-color: #4CAF50;
-        }
-        .btn-success:hover {
-            background-color: #388E3C;
-        }
-        .hidden {
-            display: none;
-        }
-        .status {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
+        .header {
+            background: rgba(255,255,255,255,0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             text-align: center;
         }
-        .status.connected {
-            background-color: #e8f5e9;
-            color: #2e7d32;
+        .header h1 {
+            color: #2c3e50;
+            font-size: 28px;
+            margin-bottom: 10px;
         }
-        .status.disconnected {
-            background-color: #ffebee;
-            color: #c62828;
+        .header p {
+            color: #6c757d;
+            font-size: 14px;
         }
-        .switch-container {
+        .toolbar {
+            background: rgba(255,255,255,255,0.95);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 25px;
+            font-size: 14px;
+            background: #f8f9fa;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+        .btn-warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .devices-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .device-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .device-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+        .device-header {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .device-name {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            margin: 20px 0;
+            gap: 10px;
+        }
+        .device-id {
+            font-size: 12px;
+            color: #6c757d;
+            font-family: monospace;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        .device-info {
+            padding: 15px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+        .info-row:last-child {
+            border-bottom: none;
+        }
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+        .info-value {
+            font-size: 14px;
+            color: #2c3e50;
+        }
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+        }
+        .status-online {
+            background: #28a745;
+            box-shadow: 0 0 8px rgba(40, 167, 69, 0.4);
+        }
+        .status-offline {
+            background: #dc3545;
+            box-shadow: 0 0 8px rgba(220, 53, 69, 0.4);
+        }
+        .device-controls {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
         .switch {
             position: relative;
             display: inline-block;
-            width: 60px;
-            height: 34px;
+            width: 50px;
+            height: 26px;
         }
         .switch input {
             opacity: 0;
@@ -107,80 +197,231 @@
             bottom: 0;
             background-color: #ccc;
             transition: .4s;
-            border-radius: 34px;
+            border-radius: 26px;
         }
         .slider:before {
             position: absolute;
             content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
+            height: 18px;
+            width: 18px;
+            left: 3px;
             bottom: 4px;
             background-color: white;
             transition: .4s;
             border-radius: 50%;
         }
         input:checked + .slider {
-            background-color: #4CAF50;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
         }
         input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(24px);
         }
-        .admin-link {
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6c757d;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #e9ecef;
+            margin-bottom: 15px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #6c757d;
+        }
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
             text-align: center;
-            margin-top: 20px;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        .stat-label {
             font-size: 12px;
-            color: #666;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        @media (max-width: 768px) {
+            .devices-grid {
+                grid-template-columns: 1fr;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                min-width: auto;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>لوحة تحكم المفتاح الذكي</h1>
-            <p>التحكم بمفتاحك الذكي عن بعد</p>
+            <h1><i class="fas fa-plug"></i> لوحة تحكم الأجهزة الذكية</h1>
+            <p>إدارة والتحكم في جميع مفاتيحك الذكية من مكان واحد</p>
         </div>
 
-        <div id="loginSection">
-            <h2>تسجيل الدخول</h2>
-            <div class="form-group">
-                <label for="deviceId">معرف الجهاز:</label>
-                <input type="text" id="deviceId" placeholder="أدخل معرف الجهاز">
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <i class="fas fa-search" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #6c757d;"></i>
+                <input type="text" id="searchInput" placeholder="البحث عن جهاز..." onkeyup="searchDevices()">
             </div>
-            <div class="form-group">
-                <label for="authToken">رمز المصادقة:</label>
-                <input type="password" id="authToken" placeholder="أدخل رمز المصادقة">
-            </div>
-            <button class="btn" onclick="login()">تسجيل الدخول</button>
+            <button class="btn btn-primary" onclick="showAddDeviceModal()">
+                <i class="fas fa-plus"></i> إضافة جهاز
+            </button>
+            <button class="btn btn-success" onclick="exportDevices()">
+                <i class="fas fa-download"></i> تصدير
+            </button>
+            <button class="btn btn-warning" onclick="showImportModal()">
+                <i class="fas fa-upload"></i> استيراد
+            </button>
         </div>
 
-        <div id="controlSection" class="hidden">
-            <h2>التحكم في الجهاز</h2>
-            <div class="status" id="connectionStatus">
-                جاري الاتصال...
+        <!-- Statistics -->
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalDevices">0</div>
+                <div class="stat-label">إجمالي الأجهزة</div>
             </div>
-            
-            <div class="switch-container">
-                <span>إيقاف</span>
-                <label class="switch">
-                    <input type="checkbox" id="switchToggle" onchange="toggleSwitch()">
-                    <span class="slider"></span>
-                </label>
-                <span>تشغيل</span>
+            <div class="stat-card">
+                <div class="stat-value" id="onlineDevices">0</div>
+                <div class="stat-label">أجهزة متصلة</div>
             </div>
-            
-            <div style="text-align: center; margin-top: 15px;">
-                <button class="btn btn-success" onclick="turnOn()">تشغيل</button>
-                <button class="btn btn-danger" onclick="turnOff()">إيقاف</button>
-            </div>
-            
-            <div style="text-align: center; margin-top: 20px;">
-                <button class="btn" onclick="logout()">تسجيل الخروج</button>
+            <div class="stat-card">
+                <div class="stat-value" id="onDevices">0</div>
+                <div class="stat-label">أجهزة تعمل</div>
             </div>
         </div>
-        
-        <div class="admin-link">
-            <a href="#" onclick="showAdmin()">للإدارة الأجهزة</a>
+
+        <!-- Devices Grid -->
+        <div class="devices-grid" id="devicesGrid">
+            <!-- Devices will be added here dynamically -->
+        </div>
+    </div>
+
+    <!-- Add Device Modal -->
+    <div id="addDeviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeAddDeviceModal()">&times;</span>
+            <h2><i class="fas fa-plus"></i> إضافة جهاز جديد</h2>
+            
+            <div class="form-group">
+                <label>اسم الجهاز</label>
+                <input type="text" id="newDeviceName" placeholder="مثال: إضاءة غرفة المعيشة">
+            </div>
+            
+            <div class="form-group">
+                <label>الغرفة</label>
+                <input type="text" id="newDeviceRoom" placeholder="مثال: غرفة المعيشة">
+            </div>
+            
+            <div class="form-group">
+                <label>معرف الجهاز</label>
+                <input type="text" id="newDeviceId" placeholder="مثال: LTH12345678">
+            </div>
+            
+            <div class="form-group">
+                <label>رمز المصادقة</label>
+                <input type="password" id="newDeviceToken" placeholder="مثال: abc123...">
+            </div>
+            
+            <div class="form-group">
+                <label>الحالة الافتراضية</label>
+                <select id="newDeviceState">
+                    <option value="false">مطفأ</option>
+                    <option value="true">مشغل</option>
+                </select>
+            </div>
+            
+            <button class="btn btn-primary" onclick="addDevice()">
+                <i class="fas fa-save"></i> حفظ الجهاز
+            </button>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeImportModal()">&times;</span>
+            <h2><i class="fas fa-upload"></i> استيراد الأجهزة</h2>
+            
+            <div class="form-group">
+                <label>لصق بيانات الأجهزة (JSON)</label>
+                <textarea id="importData" style="width: 100%; height: 150px; padding: 10px; border: 2px solid #e1e5e9; border-radius: 8px; font-family: monospace;" placeholder='[{"name":"جهاز 1","id":"LTH123","token":"abc123","room":"غرفة 1"}]'></textarea>
+            </div>
+            
+            <button class="btn btn-primary" onclick="importDevices()">
+                <i class="fas fa-import"></i> استيراد
+            </button>
         </div>
     </div>
 
@@ -188,179 +429,321 @@
     <script src="https://unpkg.com/mqtt@4.2.8/dist/mqtt.min.js"></script>
     
     <script>
-        let client = null;
-        let deviceId = '';
-        let authToken = '';
+        let devices = [];
+        let clients = {};
+        let searchTerm = '';
         
-        // Check if credentials are saved in localStorage
+        // Load devices from localStorage
         window.onload = function() {
-            const savedDeviceId = localStorage.getItem('deviceId');
-            const savedAuthToken = localStorage.getItem('authToken');
-            
-            if (savedDeviceId && savedAuthToken) {
-                document.getElementById('deviceId').value = savedDeviceId;
-                document.getElementById('authToken').value = savedAuthToken;
-                // Auto-login if credentials are saved
-                login();
-            }
+            loadDevices();
+            updateStats();
         };
         
-        function login() {
-            deviceId = document.getElementById('deviceId').value;
-            authToken = document.getElementById('authToken').value;
-            
-            if (!deviceId || !authToken) {
-                alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
-                return;
+        function loadDevices() {
+            const savedDevices = localStorage.getItem('smartSwitchDevices');
+            if (savedDevices) {
+                devices = JSON.parse(savedDevices);
             }
-            
-            // Save credentials to localStorage
-            localStorage.setItem('deviceId', deviceId);
-            localStorage.setItem('authToken', authToken);
-            
-            // Connect to MQTT broker
-            connectToMqtt();
-            
-            // Show control panel
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('controlSection').classList.remove('hidden');
+            renderDevices();
         }
         
-        function connectToMqtt() {
-            // Create unique client ID with random number
-            const clientId = 'web-' + Math.random().toString(16).substr(2, 8);
+        function saveDevices() {
+            localStorage.setItem('smartSwitchDevices', JSON.stringify(devices));
+        }
+        
+        function renderDevices() {
+            const grid = document.getElementById('devicesGrid');
+            grid.innerHTML = '';
             
-            // Connect to public MQTT broker
-            client = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
-                clientId: clientId,
-                clean: true
-            });
+            const filteredDevices = devices.filter(device => 
+                device.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                device.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                device.room.toLowerCase().includes(searchTerm.toLowerCase())
+            );
             
-            client.on('connect', function() {
-                console.log('Connected to MQTT broker');
-                updateConnectionStatus(false, 'Waiting for device status...');
+            filteredDevices.forEach((device, index) => {
+                const card = document.createElement('div');
+                card.className = 'device-card';
+                card.innerHTML = `
+                    <div class="device-header">
+                        <div class="device-name">
+                            ${device.name}
+                            <span class="device-id">${device.id}</span>
+                            <span class="status-indicator ${device.online ? 'status-online' : 'status-offline'}"></span>
+                        </div>
+                    </div>
+                    <div class="device-info">
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-home"></i> الغرفة:</span>
+                            <span class="info-value">${device.room || '-'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-clock"></i> آخر تحديث:</span>
+                            <span class="info-value">${device.lastSeen || 'غير متصل'}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label"><i class="fas fa-wifi"></i> الإشارة:</span>
+                            <span class="info-value">${device.rssi || '-'} dBm</span>
+                        </div>
+                    </div>
+                    <div class="device-controls">
+                        <label class="switch">
+                            <input type="checkbox" id="switch-${index}" ${device.state ? 'checked' : ''} onchange="toggleDevice(${index})">
+                            <span class="slider"></span>
+                        </label>
+                        <button class="btn btn-success" onclick="turnOn(${index})">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                        <button class="btn btn-danger" onclick="turnOff(${index})">
+                            <i class="fas fa-power-off"></i>
+                        </button>
+                        <button class="btn btn-primary" onclick="showDeviceDetails(${index})">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                        <button class="btn btn-warning" onclick="removeDevice(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
                 
-                // Subscribe to device status topic with QoS 1
-                client.subscribe('laithsmartswitch/remote/' + deviceId + '/status', {qos: 1});
+                grid.appendChild(card);
                 
-                // Request status immediately
-                requestStatus();
-            });
-            
-            client.on('message', function(topic, message) {
-                console.log('Received message:', topic, message.toString());
-                
-                // Parse status message
-                try {
-                    const status = JSON.parse(message.toString());
-                    updateSwitchStatus(status.relayState);
-                    updateConnectionStatus(true, 'متصل بالجهاز');
-                } catch (e) {
-                    console.error('Error parsing status message:', e);
+                // Connect to device if not already connected
+                if (!clients[device.id]) {
+                    connectToDevice(index);
                 }
             });
             
-            client.on('error', function(err) {
-                console.error('MQTT error:', err);
-                updateConnectionStatus(false, 'خطأ في الاتصال');
+            updateStats();
+        }
+        
+        function updateStats() {
+            const totalDevices = devices.length;
+            const onlineDevices = devices.filter(d => d.online).length;
+            const onDevices = devices.filter(d => d.state).length;
+            
+            document.getElementById('totalDevices').textContent = totalDevices;
+            document.getElementById('onlineDevices').textContent = onlineDevices;
+            document.getElementById('onDevices').textContent = onDevices;
+        }
+        
+        function connectToDevice(index) {
+            const device = devices[index];
+            
+            // Create unique client ID
+            const clientId = 'web-' + Math.random().toString(16).substr(2, 8);
+            
+            // Connect to MQTT
+            clients[device.id] = mqtt.connect('wss://broker.hivemq.com:8884/mqtt', {
+                clientId: clientId,
+                clean: true,
+                keepalive: 60
             });
             
-            client.on('close', function() {
-                updateConnectionStatus(false, 'غير متصل بالجهاز');
+            clients[device.id].on('connect', function() {
+                console.log('Connected to device:', device.id);
+                device.online = true;
+                device.lastSeen = new Date().toLocaleTimeString('ar-IQ');
+                renderDevices();
+                
+                // Subscribe to device status
+                clients[device.id].subscribe('laithsmartswitch/remote/' + device.id + '/status', {qos: 1});
+                
+                // Request initial status
+                requestDeviceStatus(index);
+            });
+            
+            clients[device.id].on('message', function(topic, message) {
+                try {
+                    const status = JSON.parse(message.toString());
+                    device.state = status.relayState;
+                    device.rssi = status.rssi;
+                    device.lastSeen = new Date().toLocaleTimeString('ar-IQ');
+                    renderDevices();
+                } catch (e) {
+                    console.error('Error parsing status:', e);
+                }
+            });
+            
+            clients[device.id].on('error', function(err) {
+                console.error('MQTT error for device:', device.id, err);
+                device.online = false;
+                renderDevices();
+                
+                // Try to reconnect after 5 seconds
+                setTimeout(() => connectToDevice(index), 5000);
+            });
+            
+            clients[device.id].on('close', function() {
+                console.log('MQTT connection closed for device:', device.id);
+                device.online = false;
+                renderDevices();
             });
         }
         
-        function updateConnectionStatus(connected, message) {
-            const statusElement = document.getElementById('connectionStatus');
-            if (connected) {
-                statusElement.textContent = message || 'متصل بالجهاز';
-                statusElement.className = 'status connected';
-            } else {
-                statusElement.textContent = message || 'غير متصل بالجهاز';
-                statusElement.className = 'status disconnected';
-            }
-        }
-        
-        function updateSwitchStatus(isOn) {
-            document.getElementById('switchToggle').checked = isOn;
-        }
-        
-        function toggleSwitch() {
-            const isOn = document.getElementById('switchToggle').checked;
-            sendCommand(isOn ? 'on' : 'off');
-        }
-        
-        function turnOn() {
-            document.getElementById('switchToggle').checked = true;
-            sendCommand('on');
-        }
-        
-        function turnOff() {
-            document.getElementById('switchToggle').checked = false;
-            sendCommand('off');
-        }
-        
-        function sendCommand(command) {
-            if (!client || !client.connected) {
-                alert('غير متصل بالجهاز');
-                return;
-            }
+        function requestDeviceStatus(index) {
+            const device = devices[index];
+            const client = clients[device.id];
             
-            const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
-            const message = {
-                command: command,
-                token: authToken
-            };
+            if (!client || !client.connected) return;
             
-            client.publish(topic, JSON.stringify(message));
-            console.log('Sent command:', command);
-        }
-        
-        function requestStatus() {
-            if (!client || !client.connected) {
-                return;
-            }
-            
-            const topic = 'laithsmartswitch/remote/' + deviceId + '/control';
+            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
             const message = {
                 command: 'status',
-                token: authToken
+                token: device.token
             };
             
             client.publish(topic, JSON.stringify(message));
-            console.log('Requested status');
         }
         
-        function logout() {
-            if (client) {
-                client.end();
+        function toggleDevice(index) {
+            const device = devices[index];
+            sendCommand(index, device.state ? 'off' : 'on');
+        }
+        
+        function turnOn(index) {
+            const device = devices[index];
+            device.state = true;
+            sendCommand(index, 'on');
+            renderDevices();
+        }
+        
+        function turnOff(index) {
+            const device = devices[index];
+            device.state = false;
+            sendCommand(index, 'off');
+            renderDevices();
+        }
+        
+        function sendCommand(index, command) {
+            const device = devices[index];
+            const client = clients[device.id];
+            
+            if (!client || !client.connected) {
+                alert('الجهاز غير متصل');
+                return;
             }
             
-            // Clear saved credentials
-            localStorage.removeItem('deviceId');
-            localStorage.removeItem('authToken');
+            const topic = 'laithsmartswitch/remote/' + device.id + '/control';
+            const message = {
+                command: command,
+                token: device.token
+            };
             
-            document.getElementById('loginSection').classList.remove('hidden');
-            document.getElementById('controlSection').classList.add('hidden');
-            document.getElementById('deviceId').value = '';
-            document.getElementById('authToken').value = '';
+            client.publish(topic, JSON.stringify(message));
         }
         
-        function showAdmin() {
-            // Simple admin password check
-            const password = prompt('أدخل كلمة المرور للإدارة:');
-            if (password === 'admin123') {
-                alert('واجهة الإدارة: قم بإضافة الأجهزة يدوياً إلى ملف index.html');
-            } else {
-                alert('كلمة المرور غير صحيحة');
+        function removeDevice(index) {
+            if (confirm(`هل أنت متأكد من حذف "${devices[index].name}"؟`)) {
+                // Disconnect MQTT client
+                if (clients[devices[index].id]) {
+                    clients[devices[index].id].end();
+                }
+                
+                devices.splice(index, 1);
+                saveDevices();
+                renderDevices();
             }
         }
         
-        // Request status every 30 seconds
+        function showAddDeviceModal() {
+            document.getElementById('addDeviceModal').style.display = 'flex';
+        }
+        
+        function closeAddDeviceModal() {
+            document.getElementById('addDeviceModal').style.display = 'none';
+            // Clear form
+            document.getElementById('newDeviceName').value = '';
+            document.getElementById('newDeviceRoom').value = '';
+            document.getElementById('newDeviceId').value = '';
+            document.getElementById('newDeviceToken').value = '';
+            document.getElementById('newDeviceState').value = 'false';
+        }
+        
+        function addDevice() {
+            const name = document.getElementById('newDeviceName').value;
+            const room = document.getElementById('newDeviceRoom').value;
+            const id = document.getElementById('newDeviceId').value;
+            const token = document.getElementById('newDeviceToken').value;
+            const state = document.getElementById('newDeviceState').value === 'true';
+            
+            if (!name || !id || !token) {
+                alert('الرجاء ملء جميع الحقول المطلوبة');
+                return;
+            }
+            
+            // Check if device already exists
+            if (devices.find(d => d.id === id)) {
+                alert('معرف الجهاز موجود بالفعل');
+                return;
+            }
+            
+            devices.push({
+                name: name,
+                room: room,
+                id: id,
+                token: token,
+                state: state,
+                online: false,
+                lastSeen: '-',
+                rssi: '-'
+            });
+            
+            saveDevices();
+            renderDevices();
+            closeAddDeviceModal();
+        }
+        
+        function showDeviceDetails(index) {
+            const device = devices[index];
+            alert(`تفاصيل الجهاز:\n\nالاسم: ${device.name}\nالغرفة: ${device.room || '-'}\nالمعرف: ${device.id}\nالحالة: ${device.state ? 'مشغل' : 'مطفأ'}\nآخر تحديث: ${device.lastSeen}\nالإشارة: ${device.rssi || '-'} dBm`);
+        }
+        
+        function searchDevices() {
+            searchTerm = document.getElementById('searchInput').value;
+            renderDevices();
+        }
+        
+        function exportDevices() {
+            const dataStr = JSON.stringify(devices, null, 2);
+            const blob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'smart-switch-devices.json';
+            a.click();
+        }
+        
+        function showImportModal() {
+            document.getElementById('importModal').style.display = 'flex';
+        }
+        
+        function closeImportModal() {
+            document.getElementById('importModal').style.display = 'none';
+            document.getElementById('importData').value = '';
+        }
+        
+        function importDevices() {
+            const dataStr = document.getElementById('importData').value;
+            try {
+                const importedDevices = JSON.parse(dataStr);
+                devices = [...devices, ...importedDevices];
+                saveDevices();
+                renderDevices();
+                closeImportModal();
+                alert(`تم استيراد ${importedDevices.length} جهاز بنجاح`);
+            } catch (e) {
+                alert('خطأ في استيراد البيانات. يرجى التأكد من صحة تنسيق JSON');
+            }
+        }
+        
+        // Request status updates every 30 seconds
         setInterval(function() {
-            if (client && client.connected) {
-                requestStatus();
-            }
+            devices.forEach((device, index) => {
+                if (device.online) {
+                    requestDeviceStatus(index);
+                }
+            });
         }, 30000);
     </script>
 </body>
