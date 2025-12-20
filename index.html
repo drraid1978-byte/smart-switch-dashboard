@@ -268,45 +268,47 @@
             }
         };
         
-        function login() {
-            const deviceId = document.getElementById('deviceId').value;
-            const authToken = document.getElementById('authToken').value;
-            
-            if (!deviceId || !authToken) {
-                alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
-                return;
-            }
-            
-            // Check if device already exists
-            const existingDevice = devices.find(d => d.id === deviceId);
-            if (existingDevice) {
-                alert('هذا الجهاز مضاف بالفعل');
-                return;
-            }
-            
-            // Add device to list
-            devices.push({
-                id: deviceId,
-                token: authToken,
-                name: 'جهاز ' + (devices.length + 1),
-                state: false,
-                online: false
-            });
-            
-            // Save to localStorage
-            localStorage.setItem('smartSwitchDevices', JSON.stringify(devices));
-            
-            // Clear form
-            document.getElementById('deviceId').value = '';
-            document.getElementById('authToken').value = '';
-            
-            // Show device section
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('deviceSection').classList.remove('hidden');
-            
-            // Render device list
-            renderDeviceList();
-        }
+       function login() {
+    const deviceId = document.getElementById('deviceId').value;
+    const authToken = document.getElementById('authToken').value;
+    
+    if (!deviceId || !authToken) {
+        alert('الرجاء إدخال معرف الجهاز ورمز المصادقة');
+        return;
+    }
+    
+    // Check if device already exists
+    const existingDevice = devices.find(d => d.id === deviceId);
+    if (existingDevice) {
+        alert('هذا الجهاز مضاف بالفعل');
+        return;
+    }
+    
+    // Add device to list
+    devices.push({
+        id: deviceId,
+        token: authToken,
+        name: 'جهاز ' + (devices.length + 1),
+        state: false,
+        online: false
+    });
+    
+    // Save to localStorage
+    localStorage.setItem('smartSwitchDevices', JSON.stringify(devices));
+    
+    // Clear form
+    document.getElementById('deviceId').value = '';
+    document.getElementById('authToken').value = '';
+    
+    // Show device section
+    document.getElementById('loginSection').classList.add('hidden');
+    document.getElementById('deviceSection').classList.remove('hidden');
+    
+    // Force render device list with a small delay to ensure DOM is ready
+    setTimeout(() => {
+        renderDeviceList();
+    }, 100);
+}
         
         function renderDeviceList() {
             const deviceList = document.getElementById('deviceList');
