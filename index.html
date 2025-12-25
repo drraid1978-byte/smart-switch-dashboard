@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Switch Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <!-- Use the correct QR code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -905,65 +906,37 @@
             }
         }
         
-function showQRCode(index) {
-    const device = devices[index];
-    
-    // Create QR code modal
-    const modal = document.createElement('div');
-    modal.className = 'modal';
-    modal.id = 'qrModal';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeQRModal()">&times;</span>
-            <h2><i class="fas fa-qrcode"></i> رمز QR للجهاز</h2>
+        function showQRCode(index) {
+            const device = devices[index];
             
-            <div class="qr-container">
-                <div id="qrcode"></div>
-            </div>
+            // Set device information in the modal
+            document.getElementById('qrDeviceName').textContent = device.name;
+            document.getElementById('qrDeviceId').textContent = device.id;
+            document.getElementById('qrDeviceToken').textContent = device.token;
+            document.getElementById('qrDeviceRoom').textContent = device.room || '-';
             
-            <div class="qr-info">
-                <p><strong>اسم الجهاز:</strong> <span id="qrDeviceName">${device.name}</span></p>
-                <p><strong>معرف الجهاز:</strong> <span id="qrDeviceId">${device.id}</span></p>
-                <p><strong>رمز المصادقة:</strong> <span id="qrDeviceToken">${device.token}</span></p>
-                <p><strong>الغرفة:</strong> <span id="qrDeviceRoom">${device.room || '-'}</span></p>
-                <p><strong>التعليمات:</strong></p>
-                <ol>
-                    <li>1. قم بتنزيل تطبيق QR scanner على هاتفك</li>
-                    <li>2. امسح رمز QR ضوئه</li>
-                    <li>3. امسح رمز QR الموجود في الجهاز</li>
-                    <li>4. امسح رمز QR الموجود في لوحة التحكم</li>
-                    <li>5. امسح رمز QR الموجود في تطبيقك</li>
-                    <li>6. امسح رمز QR الموجود في متصفح الويب</li>
-                    <li>7. أعد تشغيل الجهاز</li>
-                    <li>8. قم بمسح رمز QR الجديد</li>
-                </ol>
-            </div>
+            // Show the modal
+            document.getElementById('qrModal').style.display = 'flex';
             
-            <button class="btn btn-primary" onclick="printQRCode()">
-                <i class="fas fa-print"></i> طباعة
-            </button>
-        </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    // Generate QR code after modal is added to DOM
-    setTimeout(() => {
-        new QRCode(document.getElementById("qrcode"), {
-            text: `smartswitch:${device.id}:${device.token}`,
-            width: 200,
-            height: 200,
-            colorDark: "#2c3e50",
-            colorLight: "#ffffff",
-        });
-    }, 100);
-}
+            // Generate QR code after a short delay to ensure the modal is visible
+            setTimeout(() => {
+                // Clear previous QR code
+                document.getElementById('qrcode').innerHTML = '';
+                
+                // Generate new QR code
+                new QRCode(document.getElementById("qrcode"), {
+                    text: `smartswitch:${device.id}:${device.token}`,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#2c3e50",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }, 100);
+        }
         
         function closeQRModal() {
-            const modal = document.getElementById('qrModal');
-            if (modal) {
-                document.body.removeChild(modal);
-            }
+            document.getElementById('qrModal').style.display = 'none';
         }
         
         function printQRCode() {
