@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Switch Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- QR Code Library -->
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- QR Code Library REMOVED -->
     <style>
         * {
             margin: 0;
@@ -288,9 +287,16 @@
         }
         .day-btn.selected { background: #00bcd4; color: white; border-color: #00bcd4; box-shadow: 0 2px 5px rgba(0,188,212,0.3); }
         
-        /* QR */
-        .qr-container { text-align: center; margin: 15px 0; }
-        .qr-code { display: inline-block; padding: 10px; background: white; border-radius: 8px; border: 1px solid #eee; }
+        /* Export Container Styles */
+        .export-container { 
+            text-align: center; 
+            margin: 20px 0; 
+            padding: 20px; 
+            background: #f8f9fa; 
+            border-radius: 10px; 
+            border: 1px dashed #ccc;
+        }
+        .export-icon { font-size: 48px; color: #28a745; margin-bottom: 15px; }
         
         @media (max-width: 768px) {
             .devices-grid { grid-template-columns: 1fr; }
@@ -331,7 +337,7 @@
                 <input type="text" id="searchInput" placeholder="البحث عن جهاز..." onkeyup="searchDevices()">
             </div>
             <button class="btn btn-primary" onclick="showAddDeviceModal()"><i class="fas fa-plus"></i> إضافة جهاز</button>
-            <button class="btn btn-success" onclick="exportDevices()"><i class="fas fa-download"></i> تصدير</button>
+            <button class="btn btn-success" onclick="exportDevices()"><i class="fas fa-download"></i> تصدير الكل</button>
             <button class="btn btn-warning" onclick="document.getElementById('importFileInput').click()"><i class="fas fa-upload"></i> استيراد</button>
             <input type="file" id="importFileInput" style="display: none;" onchange="importDevices(this)">
         </div>
@@ -439,19 +445,20 @@
         </div>
     </div>
 
-    <!-- QR MODAL -->
-    <div id="qrModal" class="modal">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close-modal" onclick="closeModal('qrModal')">&times;</span>
-            <h2>رمز QR للجهاز</h2>
-            <div class="qr-container">
-                <div id="qrcode"></div>
+    <!-- EXPORT DEVICE MODAL (Replaced QR Modal) -->
+    <div id="exportDeviceModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('exportDeviceModal')">&times;</span>
+            <h2>تصدير بيانات الجهاز</h2>
+            <div class="export-container">
+                <div class="export-icon"><i class="fas fa-file-export"></i></div>
+                <p id="exportDeviceName" style="font-size:18px; font-weight:bold; margin-bottom:5px;"></p>
+                <p id="exportDeviceId" style="color:#666; margin-bottom:15px;"></p>
+                <p style="font-size:14px; color:#555;">يمكنك تصدير ملف إعدادات هذا الجهاز وحفظه محلياً أو مشاركته.</p>
             </div>
-            <div style="margin-bottom: 10px;">
-                <p id="qrDeviceName" style="font-weight:bold;"></p>
-                <p id="qrDeviceId" style="font-family:monospace; color:#666;"></p>
-            </div>
-            <button class="btn btn-primary" onclick="printQR()"><i class="fas fa-print"></i> طباعة</button>
+            <button class="btn btn-success" onclick="confirmExportDevice()" style="width: 100%;">
+                <i class="fas fa-download"></i> تحميل ملف الجهاز
+            </button>
         </div>
     </div>
 
@@ -556,7 +563,8 @@
                         <!-- Actions -->
                         <div class="actions-row">
                             <button class="action-btn" onclick="openEditModal(${index})" title="تعديل"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn" onclick="openQRModal(${index})" title="رمز QR"><i class="fas fa-qrcode"></i></button>
+                            <!-- Changed QR button to Export button -->
+                            <button class="action-btn" onclick="openExportModal(${index})" title="تصدير"><i class="fas fa-file-export"></i></button>
                             <button class="action-btn delete" onclick="deleteDevice(${index})" title="حذف"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
@@ -774,19 +782,32 @@
             closeModal('addDeviceModal');
         }
         
-        // --- QR ---
-        function openQRModal(index) {
+        // --- Export Single Device (Replaces QR Logic) ---
+        function openExportModal(index) {
+            currentEditIndex = index;
             const d = devices[index];
-            document.getElementById('qrDeviceName').textContent = d.name;
-            document.getElementById('qrDeviceId').textContent = d.id;
-            document.getElementById('qrModal').style.display = 'flex';
-            setTimeout(() => {
-                document.getElementById('qrcode').innerHTML = '';
-                new QRCode(document.getElementById("qrcode"), { text: `smartswitch:${d.id}:${d.token}`, width: 180 });
-            }, 100);
+            document.getElementById('exportDeviceName').textContent = d.name;
+            document.getElementById('exportDeviceId').textContent = "ID: " + d.id;
+            document.getElementById('exportDeviceModal').style.display = 'flex';
         }
         
-        function printQR() { window.print(); }
+        function confirmExportDevice() {
+            const device = devices[currentEditIndex];
+            // Create a JSON object of just this device
+            const deviceData = JSON.stringify([device], null, 2);
+            
+            // Create a blob and download link
+            const blob = new Blob([deviceData], {type: 'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            // Sanitize filename
+            const safeName = device.name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            a.download = `${safeName}_device.json`;
+            a.click();
+            
+            // Close modal after download
+            closeModal('exportDeviceModal');
+        }
 
         // --- Utils ---
         function closeModal(id) { document.getElementById(id).style.display = 'none'; }
