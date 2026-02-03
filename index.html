@@ -65,6 +65,44 @@
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
         
+.designer {
+    /* Geometry: border hugs text */
+    display: inline-block;
+
+    /* Typography */
+    font-size: clamp(14px, 1.8vw, 22px);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+
+    /* Spacing */
+    margin-top: 12px;
+    padding: 6px 16px;
+
+    /* Glass-style container */
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(6px);
+
+    /* Elegant border that respects text bounds */
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 14px;
+
+    /* Soft pearl text */
+    color: #f5f7ff;
+
+    /* Depth + light direction */
+    text-shadow:
+        0 1px 1px rgba(0, 0, 0, 0.35),
+        0 4px 10px rgba(102, 126, 234, 0.35);
+
+    /* Lift from background */
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.18),
+        inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+
+
         .toolbar {
             background: rgba(255,255,255,0.95);
             border-radius: 10px;
@@ -360,7 +398,16 @@
                      class="header-logo">
             </div>
             
-            <p> مشروع المنزل الذكي/ لوحة التحكم بالأجهزة الذكية <i class="fas fa-bolt" style="color: yellow;"></i></p>
+           
+         <p>  مشروع المنزل الذكي/ لوحة التحكم بالأجهزة عبر الانترنيت <i class="fas fa-bolt" style="color: yellow;"></i></p>
+
+         <div class="designer">
+تصميم وتنفيذ: أ.م.د. رائد خضر سلمان الفهداوي
+<br>
+
+رئيس قسم أنظمة السيطرة والاتصالات 
+
+         </div>
 
         </div>
 
